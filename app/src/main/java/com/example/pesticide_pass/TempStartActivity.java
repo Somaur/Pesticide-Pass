@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Switch;
+
+import com.example.pesticide_pass.running_state.RunningState;
+import com.example.pesticide_pass.ui.login.LoginActivity;
 
 public class TempStartActivity extends AppCompatActivity {
     
@@ -13,9 +18,10 @@ public class TempStartActivity extends AppCompatActivity {
 
     Button button1; // 添加
     Button button2; // 预测
-    Button button3; // 上传
-    Button button4; // 管理
-    Button button5; // 登录
+    Button button3; // 管理
+    Button button4; // 登录
+
+    Switch switch1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,9 +31,14 @@ public class TempStartActivity extends AppCompatActivity {
         button2 = findViewById(R.id.button2);
         button3 = findViewById(R.id.button3);
         button4 = findViewById(R.id.button4);
-        button5 = findViewById(R.id.button5);
+        switch1 = findViewById(R.id.switch1);
         setButtonsListener();
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        switch1.setChecked(RunningState.logged_in);
     }
 
     private void setButtonsListener(){
@@ -41,25 +52,28 @@ public class TempStartActivity extends AppCompatActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(TempStartActivity.this, ModelPredictionActivity.class);
+                startActivity(intent);
             }
         });
         button3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(TempStartActivity.this, ModelManageActivity.class);
+                startActivity(intent);
             }
         });
         button4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Intent intent = new Intent(TempStartActivity.this, AccountSettingActivity.class);
+                startActivity(intent);
             }
         });
-        button5.setOnClickListener(new View.OnClickListener() {
+        switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                RunningState.logged_in = b;
             }
         });
     }
