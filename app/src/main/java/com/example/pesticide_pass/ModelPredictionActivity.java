@@ -71,4 +71,6 @@ public class ModelPredictionActivity extends AppCompatActivity {
             }
         });
     }
+
+    // TODO: 编写“进行预测”之后的逻辑
 }
