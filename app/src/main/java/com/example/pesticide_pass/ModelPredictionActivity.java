@@ -3,7 +3,6 @@ package com.example.pesticide_pass;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -27,19 +26,16 @@ public class ModelPredictionActivity extends AppCompatActivity {
     private Spinner sp;
     private Button  btn;
 
-    private String new_model_id;
-    private ActivityResultLauncher resultModelLauncher = registerForActivityResult(
+    private String                         new_model_id;
+    private ActivityResultLauncher<Intent> resultModelLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
-            new ActivityResultCallback<ActivityResult>() {
-                @Override
-                public void onActivityResult(ActivityResult result) {
-                    Log.e("RESULT", "Into 'onActivityResult'");
-                    if (result.getResultCode() == RESULT_OK) {
-                        new_model_id = result.getData().getStringExtra("model_id");
-                        model_names.add("新增模型");
-                        sp.setSelection(model_names.size() - 1);
-                        Toast.makeText(ModelPredictionActivity.this, "自动选择新增的模型", Toast.LENGTH_SHORT).show();
-                    }
+            result -> {
+                Log.e("RESULT", "Into 'onActivityResult'");
+                if (result.getResultCode() == RESULT_OK) {
+                    new_model_id = result.getData().getStringExtra("model_id");
+                    model_names.add("新增模型");
+                    sp.setSelection(model_names.size() - 1);
+                    Toast.makeText(ModelPredictionActivity.this, "自动选择新增的模型", Toast.LENGTH_SHORT).show();
                 }
             }
     );
