@@ -122,7 +122,7 @@ private ActivityLoginBinding binding;
 
     private void updateUiWithUser(LoggedInUserView model) {
         String welcome = getString(R.string.welcome) + model.getDisplayName();
-        // TODO : initiate successful logged in experience
+        // TODO: 登录成功后的效果（界面效果） (initiate successful logged in experience)
         Toast.makeText(getApplicationContext(), welcome, Toast.LENGTH_LONG).show();
     }
 

@@ -5,7 +5,9 @@
 -->
 <data-extraction-rules>
     <cloud-backup>
-        <!-- TODO: Use <include> and <exclude> to control what is backed up.
+        <!-- xTODO: Use <include> and <exclude> to control what is backed up.
+                    这是用于备份（cloud-backup：云端备份）的声明
+                    暂时应该用不上
         <include .../>
         <exclude .../>
         -->

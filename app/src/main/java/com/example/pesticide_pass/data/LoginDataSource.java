@@ -12,7 +12,7 @@ public class LoginDataSource {
     public Result<LoggedInUser> login(String username, String password) {
 
         try {
-            // TODO: handle loggedInUser authentication
+            // TODO: 处理已记录的用户身份验证 (handle loggedInUser authentication)
             // 这里是处理登录和判断成功的位置
             LoggedInUser fakeUser =
                     new LoggedInUser(
@@ -26,7 +26,7 @@ public class LoginDataSource {
     }
 
     public void logout() {
-        // TODO: revoke authentication
+        // TODO: 撤销身份验证 (revoke authentication)
         // 这里是处理登出的位置
     }
 }
