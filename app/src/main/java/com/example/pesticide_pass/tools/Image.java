@@ -14,4 +14,5 @@ public class Image {
         matrix.postScale(scaleW, scaleH);
         return Bitmap.createBitmap(bitmap, 0, 0, bmpW, bmpH, matrix, true);
     }
+
 }

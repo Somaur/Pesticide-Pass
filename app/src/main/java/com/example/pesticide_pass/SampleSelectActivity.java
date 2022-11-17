@@ -12,6 +12,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.pesticide_pass.data.ImageTag;
+import com.example.pesticide_pass.data.TaggedImage;
+
 import java.util.Locale;
 
 
@@ -21,7 +24,9 @@ public class SampleSelectActivity extends AppCompatActivity {
     TextView tv;
     Button btn;
 
-    float retX, retY;
+    TaggedImage taggedImage;
+
+    int x, y;
 
     @SuppressLint("ClickableViewAccessibility")  // 用来消除setOnTouchListener警告的
     @Override
@@ -31,8 +36,9 @@ public class SampleSelectActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         Uri image_uri = (Uri) intent.getParcelableExtra("image_uri");
+        taggedImage = new TaggedImage(image_uri, null, SampleSelectActivity.this);
 
-        iv = findViewById(R.id.iv);
+        iv = findViewById(R.id.iv1);
         tv = findViewById(R.id.tv);
         btn = findViewById(R.id.btn1);
 
@@ -40,9 +46,12 @@ public class SampleSelectActivity extends AppCompatActivity {
         iv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                retX = motionEvent.getX();
-                retY = motionEvent.getY();
-                tv.setText(String.format(Locale.CHINA, "采样坐标: [%.2f, %.2f]", retX, retY));
+                x = (int)motionEvent.getX();
+                y = (int)motionEvent.getY();
+                taggedImage.setTag(new ImageTag.Dot(x, y), SampleSelectActivity.this);
+                tv.setText(String.format(Locale.CHINA,
+                        "采样坐标: [%d, %d]\n 灰度: [%.2f]", x, y, taggedImage.getGrayscale()
+                ));
                 return false;
             }
         });
@@ -50,8 +59,7 @@ public class SampleSelectActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.putExtra("x", (int)retX);
-                intent.putExtra("y", (int)retY);
+                intent.putExtra("tag", taggedImage.getTag());
                 setResult(RESULT_OK, intent);
                 finish();
             }
