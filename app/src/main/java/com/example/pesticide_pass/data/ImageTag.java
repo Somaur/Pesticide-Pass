@@ -12,4 +12,5 @@ public class ImageTag {
         }
         public int x, y;
     }
+    // TODO: 计划中有 单点 涂抹 选区 三种Tag
 }

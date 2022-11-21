@@ -25,7 +25,7 @@ public class TaggedImage {
     }
 
     public double getGrayscale() {
-        return Math.round(grayscale * 1000) / 1000d;
+        return grayscale;
     }
 
     public Bitmap getBmp() {

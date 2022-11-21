@@ -12,8 +12,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.android.material.badge.BadgeUtils;
-
 import java.util.Locale;
 
 
@@ -36,7 +34,7 @@ public class SampleSelectActivity extends AppCompatActivity {
 
         iv = findViewById(R.id.iv);
         tv = findViewById(R.id.tv);
-        btn = findViewById(R.id.btn);
+        btn = findViewById(R.id.btn1);
 
         iv.setImageURI(image_uri);
         iv.setOnTouchListener(new View.OnTouchListener() {
