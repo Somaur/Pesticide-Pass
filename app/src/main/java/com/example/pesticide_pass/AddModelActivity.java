@@ -7,29 +7,27 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Adapter;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.pesticide_pass.adapter.TaggedImageAdapter;
 import com.example.pesticide_pass.data.ImageTag;
 import com.example.pesticide_pass.data.TaggedImage;
-import com.example.pesticide_pass.tools.debug.ToBeContinued;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -42,9 +40,10 @@ import java.util.Locale;
 public class AddModelActivity extends AppCompatActivity {
 
     Button btn_add_img;
+    Button btn_create_model;
     ListView lv;
 
-    List<TaggedImage> images;
+    List<TaggedImage>  images;
     TaggedImageAdapter lvAdapter;
 
     Bitmap bmp;
@@ -70,8 +69,8 @@ public class AddModelActivity extends AppCompatActivity {
         intent.putExtra("model_id", "AAA");
         setResult(RESULT_OK, intent);
 
-        findViewById(R.id.button).setOnClickListener(ToBeContinued.clickListener);
-        btn_add_img = findViewById(R.id.btn);
+        btn_add_img = findViewById(R.id.btn1);
+        btn_create_model = findViewById(R.id.btn2);
         lv = findViewById(R.id.lv);
         images = new ArrayList<>();
 
@@ -120,48 +119,34 @@ public class AddModelActivity extends AppCompatActivity {
                 resultModelLauncher.launch(intent);
             }
         });
-    }
 
-    static class TaggedImageAdapter extends BaseAdapter {
-
-        private Context context;
-        private List<TaggedImage> taggedImages;
-
-        public TaggedImageAdapter(Context context, List<TaggedImage> data) {
-            this.context = context;
-            this.taggedImages = data;
-        }
-
-        public void setTaggedImages(List<TaggedImage> taggedImages) {
-            this.taggedImages = taggedImages;
-        }
-
-        @Override
-        public int getCount() {
-            return taggedImages.size();
-        }
-
-        @Override
-        public Object getItem(int i) {
-            return i;
-        }
-
-        @Override
-        public long getItemId(int i) {
-            return i;
-        }
-
-        @Override
-        public View getView(int i, View view, ViewGroup viewGroup) {
-            if (view == null)
-            {
-                view = LayoutInflater.from(context).inflate(R.layout.item_tagged_image, null);
+        btn_create_model.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ArrayList<Double> xPos = new ArrayList<>();
+                ArrayList<Double> yPos = new ArrayList<>();
+                for (int i = 0; i < lvAdapter.getCount(); ++i) {
+                    xPos.add(lvAdapter.getTaggedImage(i).getGrayscale());
+                    yPos.add(lvAdapter.getValue(i));
+                }
+                Intent intent = new Intent(AddModelActivity.this, CreateModelActivity.class);
+                intent.putExtra("xPos", xPos);
+                intent.putExtra("yPos", yPos);
+                startActivity(intent);
+                finish();
             }
-            ImageView iv = view.findViewById(R.id.iv);
-            TextView tv3 = view.findViewById(R.id.tv3);
-            iv.setImageBitmap(taggedImages.get(i).getBmp());
-            tv3.setText(String.valueOf(taggedImages.get(i).getGrayscale()));
-            return view;
-        }
+        });
     }
+
+    // TODO: 重写与 AccountSettingActivity 的通信
+    //       考虑一个 TaggedImage 对应一个缓存文件，从而避开通信图片
+//    // broadcast receiver
+//    private BroadcastReceiver mRefreshBroadcastReceiver = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            if (action.equals("action.refreshFriend")) {
+//            }
+//        }
+//    };
 }

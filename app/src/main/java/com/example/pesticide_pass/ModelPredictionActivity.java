@@ -1,7 +1,5 @@
 package com.example.pesticide_pass;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,7 +47,7 @@ public class ModelPredictionActivity extends AppCompatActivity {
         findViewById(R.id.button8).setOnClickListener(ToBeContinued.clickListener);
 
         sp = findViewById(R.id.sp_model);
-        btn = findViewById(R.id.btn);
+        btn = findViewById(R.id.btn1);
 
         for (int i = 1; i <= 10; ++i) {
             model_names.add("示例模型 " + i);
