@@ -8,7 +8,7 @@ import android.view.View;
 import android.widget.Button;
 
 public class TempStartActivity extends AppCompatActivity {
-    
+
     // ......
 
     Button button1; // 添加
