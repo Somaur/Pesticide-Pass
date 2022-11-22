@@ -112,6 +112,10 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
         btn_create_model.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (lvAdapter.getCount() < 2) {
+                    Toast.makeText(AddModelActivity.this, "请设置两张及以上图片！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 ArrayList<Double> xPos = new ArrayList<>();
                 ArrayList<Double> yPos = new ArrayList<>();
                 for (int i = 0; i < lvAdapter.getCount(); ++i) {
