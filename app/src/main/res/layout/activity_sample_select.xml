@@ -7,7 +7,7 @@
     tools:context=".SampleSelectActivity">
 
     <ImageView
-        android:id="@+id/iv"
+        android:id="@+id/iv1"
         android:layout_width="300dp"
         android:layout_height="300dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -21,7 +21,7 @@
         android:id="@+id/tv"
         android:text="灰度: 0.0"
         android:textSize="28sp"
-        app:layout_constraintTop_toBottomOf="@id/iv"
+        app:layout_constraintTop_toBottomOf="@id/iv1"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
 
@@ -31,6 +31,7 @@
         android:id="@+id/btn1"
         android:text="确认采样点"
         android:textSize="20sp"
+        android:gravity="center_horizontal"
         app:layout_constraintTop_toBottomOf="@id/tv"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"/>
