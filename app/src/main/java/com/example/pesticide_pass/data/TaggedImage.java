@@ -1,5 +1,7 @@
 package com.example.pesticide_pass.data;
 
+import static com.example.pesticide_pass.tools.Image.to600_600;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -50,7 +52,7 @@ public class TaggedImage {
     public static double getGrayscale(Uri uri, ImageTag tag, Context context) {
         try {
             return getGrayscale(
-                    BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri)),
+                    to600_600(BitmapFactory.decodeStream(context.getContentResolver().openInputStream(uri))),
                     tag
             );
         } catch (FileNotFoundException e) {
