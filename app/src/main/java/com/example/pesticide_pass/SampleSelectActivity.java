@@ -6,6 +6,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -26,7 +27,7 @@ public class SampleSelectActivity extends AppCompatActivity {
 
     TaggedImage taggedImage;
 
-    int x, y;
+    double height, width;
 
     @SuppressLint("ClickableViewAccessibility")  // 用来消除setOnTouchListener警告的
     @Override
@@ -38,16 +39,19 @@ public class SampleSelectActivity extends AppCompatActivity {
         Uri image_uri = (Uri) intent.getParcelableExtra("image_uri");
         taggedImage = new TaggedImage(image_uri, null, SampleSelectActivity.this);
 
-        iv = findViewById(R.id.iv1);
         tv = findViewById(R.id.tv);
         btn = findViewById(R.id.btn1);
+        iv = findViewById(R.id.iv1);
 
         iv.setImageURI(image_uri);
         iv.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                x = (int)motionEvent.getX();
-                y = (int)motionEvent.getY();
+                height = iv.getHeight();
+                width = iv.getWidth();
+                int x = (int)(motionEvent.getX() * 600. / width);
+                int y = (int)(motionEvent.getY() * 600. / height);
+                Log.e("OnTouch", "" + x + " " + y);
                 taggedImage.setTag(new ImageTag.Dot(x, y), SampleSelectActivity.this);
                 tv.setText(String.format(Locale.CHINA,
                         "采样坐标: [%d, %d]\n 灰度: [%.2f]", x, y, taggedImage.getGrayscale()
