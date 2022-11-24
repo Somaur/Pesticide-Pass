@@ -1,5 +1,7 @@
 package com.example.pesticide_pass;
 
+import static com.example.pesticide_pass.tools.FileTools.getNewTempUri;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -93,26 +95,7 @@ public class AddModelByPictureActivity extends AppCompatActivity {
     private void setTake_photo(){
         //创建file对象储存拍摄到的照片,将图片命名为output_image.jpg，将他存储在sd卡的关联目录下，调用getExternalCacheDir()
         //方法可以获得这个目录
-        File outputImg=new File(getExternalCacheDir(),"output_image.jpg");
-        try {
-            if (outputImg.exists()){
-                outputImg.delete();
-            }
-            outputImg.createNewFile();
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-
-        //判断系统版本，低于7.0会将file对象转换为uir对象否则调用getUriForFile将file对象转化为一个封装过的uir对象
-        //因为7.0开始直接使用本地真实路径会被认为是不安全的会抛出FileUirExposeption异常，FileProvider是一个
-        //内容提供器会将封装的uir提供给外部
-        if (Build.VERSION.SDK_INT>=24){
-            imgUri= FileProvider.getUriForFile(getApplicationContext(),"com.example.pesticide_pass.image_provider",outputImg);
-            String adb=imgUri.toString();
-
-        }else {
-            imgUri= Uri.fromFile(outputImg);
-        }
+        imgUri = getNewTempUri(AddModelByPictureActivity.this, "output_image.jpg");
         Intent intent=new Intent("android.media.action.IMAGE_CAPTURE");
 
            /* 先来说下intent的作用，intent是Android程序中各组件之间进行交互的一种重要方式，一般被用来启动活动、启动服务以及发送广播等；
@@ -199,11 +182,12 @@ public class AddModelByPictureActivity extends AppCompatActivity {
 
     private void setChose_photo(){
         if (ContextCompat.checkSelfPermission(AddModelByPictureActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(AddModelByPictureActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+            ActivityCompat.requestPermissions(AddModelByPictureActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
         }else {
             openAlbum();
         }
     }
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode){
