@@ -24,26 +24,35 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.GridLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class AddModelByPictureActivity extends AppCompatActivity {
 
     Button take_photo;
     Button chose_photo;
+    Button create_model;
     ImageView pictureList;
     Uri imgUri;
     final int TAKE_PHOTO=1;
     final int CHOSE_PHOTO=2;
+    double screen_width;
+    double screen_height;
+    BitmapList bitmapList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +61,10 @@ public class AddModelByPictureActivity extends AppCompatActivity {
 
         take_photo=findViewById(R.id.take_photo);
         chose_photo=findViewById(R.id.chose_photo);
-        pictureList=findViewById(R.id.picture);
-
+        create_model=findViewById(R.id.create_model);
+        DisplayMetrics dm = getResources().getDisplayMetrics();
+        screen_width = dm.widthPixels;
+        screen_height= dm.heightPixels;
 
         take_photo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,6 +79,14 @@ public class AddModelByPictureActivity extends AppCompatActivity {
                 setChose_photo();
             }
 
+        });
+
+        create_model.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //调用模型创建模块
+                //传递参数为bitmapList,存储了所有选中的bitmap.
+            }
         });
     }
 
@@ -104,7 +123,6 @@ public class AddModelByPictureActivity extends AppCompatActivity {
 
           /*  当向intent传入 MediaStore.EXTRA_OUTPUT参数后，表明这是一个存储动作。
             相机拍摄到的图片会直接存储到相应路径，不会缓存在内存中。*/
-
         //intent.putExtra(MediaStore.EXTRA_OUTPUT,imgUri);指定图片输出地址
         intent.putExtra(MediaStore.EXTRA_OUTPUT,imgUri);
         startActivityForResult(intent,TAKE_PHOTO);
@@ -118,8 +136,6 @@ public class AddModelByPictureActivity extends AppCompatActivity {
         switch (requestCode){
 
             case TAKE_PHOTO:
-         /*   String adb=imgUri.toString();
-            Log.d("MainActivity","s输出为："+adb);*/
                 Log.d("MainActivity","输出为："+requestCode);
           /*  其实可以理解为系统帮你预设好了的标识符，
             有
@@ -150,13 +166,15 @@ public class AddModelByPictureActivity extends AppCompatActivity {
 
                                             decodeStream()
                     　 方法可以将InputStream对象转换成Bitmap对象。*/
-
                         Bitmap bitmap= BitmapFactory.decodeStream(getContentResolver().openInputStream(imgUri));
                         BitmapCompressUtils bitmapCompressUtils=new BitmapCompressUtils();
-                        Bitmap bitmap2=bitmapCompressUtils.zoomImage(bitmap,400,400);
-
-                        pictureList.setImageBitmap(bitmap2);
-
+                        Bitmap bitmap2=bitmapCompressUtils.zoomImage(bitmap,(screen_width-30)/3,(screen_width-10)/3);
+                        bitmapList.list.add(bitmap2);
+                        GridLayout mGridLayout =(GridLayout) findViewById(R.id.gridlayout);
+                        ImageView iv=new ImageView(getApplicationContext());
+                        iv.setImageBitmap(bitmap2);
+                        iv.setPadding(5,5,5,5);
+                        mGridLayout.addView(iv);
                     } catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -170,13 +188,7 @@ public class AddModelByPictureActivity extends AppCompatActivity {
 
                 if (resultCode == Activity.RESULT_OK){
                     //判断系统版本，4.4以上系统用这个方法处理图片
-                    if (Build.VERSION.SDK_INT>=19){
-                        handleImageBeforeKiKat(data);
-                        //handleImageOnKiKat(data);
-                    }else {
-                        handleImageBeforeKiKat(data);
-                    }
-
+                    handleImageBeforeKiKat(data);
                 }
                 break;
 
@@ -278,8 +290,13 @@ public class AddModelByPictureActivity extends AppCompatActivity {
         if(imagePath != null){
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             BitmapCompressUtils bitmapCompressUtils=new BitmapCompressUtils();
-            Bitmap bitmap1=bitmapCompressUtils.zoomImage(bitmap,100,100);
-            pictureList.setImageBitmap(bitmap1);
+            Bitmap bitmap2=bitmapCompressUtils.zoomImage(bitmap,(screen_width-30)/3,(screen_width-10)/3);
+            bitmapList.list.add(bitmap2);
+            GridLayout mGridLayout =(GridLayout) findViewById(R.id.gridlayout);
+            ImageView iv=new ImageView(getApplicationContext());
+            iv.setImageBitmap(bitmap2);
+            iv.setPadding(5,5,5,5);
+            mGridLayout.addView(iv);
         }else{
             Toast.makeText(this,"failed to get image", Toast.LENGTH_LONG).show();
         }
@@ -287,4 +304,3 @@ public class AddModelByPictureActivity extends AppCompatActivity {
 
 
 }
-
