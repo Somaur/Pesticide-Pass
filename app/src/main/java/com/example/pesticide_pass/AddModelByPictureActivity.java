@@ -223,6 +223,7 @@ public class AddModelByPictureActivity extends AppCompatActivity {
         intent.setType("image/*");
         startActivityForResult(intent,CHOSE_PHOTO);
     }
+
     private void handleImageBeforeKiKat(Intent data) {
         String imgPath=null;
         Uri uri=data.getData();
@@ -233,14 +234,6 @@ public class AddModelByPictureActivity extends AppCompatActivity {
             (java中，对象的首地址是它在内存中存放的起始地址，它后面的地址是用来存放它所包含的各个属性的地址，所以内存中会用多个内存块来存放对象的各个参数，
             而通过这个首地址就可以找到该对象，进而可以找到该对象的各个属性)
             2、“equals()”比较字符串中所包含的内容是否相同。*/
-          /*  String s1,s2,s3 = "abc", s4 ="abc" ;
-            s1 = new String("abc");
-            s2 = new String("abc");
-
-            s1==s2   是 false      //两个变量的内存地址不一样，也就是说它们指向的对象不 一样，
-
-            s1.equals(s2) 是 true    //两个变量的所包含的内容是abc，故相等。*/
-
             /*uri.getAuthority()返回此URL的权限部分，如果此URL没有权限，则返回null。*/
 
             if ("com.android.providers.media.documents".equals(uri.getAuthority())){
