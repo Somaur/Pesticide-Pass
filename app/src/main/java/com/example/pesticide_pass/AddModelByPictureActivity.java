@@ -184,6 +184,8 @@ public class AddModelByPictureActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             Bitmap bitmap2= BitmapCompressUtils.zoomImage(bitmap,(screen_width-30)/3,(screen_width-10)/3);
 
+            Log.e("TAG", bitmap.toString());
+            Log.e("TAG", imgUri.toString());
             WriteBitmapToUri(AddModelByPictureActivity.this, bitmap, imgUri);
 
             GridLayout mGridLayout =(GridLayout) findViewById(R.id.gridlayout);

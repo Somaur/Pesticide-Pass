@@ -1,6 +1,7 @@
 package com.example.pesticide_pass.tools;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
@@ -16,6 +17,7 @@ import androidx.core.content.FileProvider;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.File;
+import java.io.OutputStream;
 import java.util.Calendar;
 
 public class FileTools {
@@ -99,9 +101,8 @@ public class FileTools {
     }
 
     public static void WriteBitmapToUri(Context context, Bitmap bmp, Uri uri) {
-        String path = uri.getPath();
         try {
-            FileOutputStream fos = new FileOutputStream(path);
+            OutputStream fos = context.getContentResolver().openOutputStream(uri);
             bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();
