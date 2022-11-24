@@ -1,17 +1,12 @@
 package com.example.pesticide_pass;
 
-import static com.example.pesticide_pass.tools.Image.to600_600;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -23,11 +18,7 @@ import com.example.pesticide_pass.adapter.TaggedImageAdapter;
 import com.example.pesticide_pass.data.ImageTag;
 import com.example.pesticide_pass.data.TaggedImage;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class AddModelActivity extends AppCompatActivity implements TaggedImageAdapter.ICallback {
 
@@ -101,8 +92,8 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
 
 
 
-    private ChangeTagOnAdapter changeTagOnAdapter = new ChangeTagOnAdapter();
-    private final ActivityResultLauncher<Intent> changeTagLauncher = registerForActivityResult(
+    private final ChangeTagOnAdapter             changeTagOnAdapter = new ChangeTagOnAdapter();
+    private final ActivityResultLauncher<Intent> changeTagLauncher  = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             changeTagOnAdapter
     );
