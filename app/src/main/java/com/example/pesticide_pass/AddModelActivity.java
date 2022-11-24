@@ -37,14 +37,14 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
 
     TaggedImageAdapter lvAdapter;
 
-    Bitmap bmp;
-    Uri image_uri;
     private final ActivityResultLauncher<Intent> resultModelLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    ImageTag tag = (ImageTag) result.getData().getSerializableExtra("tag");
-                    lvAdapter.addTaggedImage(new TaggedImage(image_uri, tag, AddModelActivity.this));
+                    ArrayList<Uri> image_uris = result.getData().getParcelableArrayListExtra("image_uris");
+                    for (Uri uri : image_uris) {
+                        lvAdapter.addTaggedImage(new TaggedImage(uri, null, AddModelActivity.this));
+                    }
                     lvAdapter.notifyDataSetChanged();
                 }
             }
@@ -68,43 +68,7 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
         btn_add_img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                switch (lvAdapter.getCount() % 5) {
-                    case 0: bmp = to600_600(BitmapFactory.decodeResource(getResources(), R.drawable.img0_1));
-                        break;
-                    case 1: bmp = to600_600(BitmapFactory.decodeResource(getResources(), R.drawable.img1_0));
-                        break;
-                    case 2: bmp = to600_600(BitmapFactory.decodeResource(getResources(), R.drawable.img5_0));
-                        break;
-                    case 3: bmp = to600_600(BitmapFactory.decodeResource(getResources(), R.drawable.img10_0));
-                        break;
-                    default: bmp = to600_600(BitmapFactory.decodeResource(getResources(), R.drawable.img15_0));
-                        break;
-                }
-                File temp_image = new File(getCacheDir(), String.format(Locale.CHINA, "temp_%d.jpg", lvAdapter.getCount()));
-                if (temp_image.exists()) temp_image.delete();
-                try {
-                    temp_image.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                image_uri = FileProvider.getUriForFile(getApplicationContext(),
-                        "com.example.pesticide_pass.FileProvider",
-                        temp_image
-                );
-                // TODO: 此处应该从“照相机”或“相册”获取图片并置入image_uri，现暂用资源文件代替
-                //       考虑到相册批量获取图片的可能性，后续还需要视情况进行修改
-                try {
-                    FileOutputStream fos = new FileOutputStream(temp_image);
-                    bmp.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-                    fos.flush();
-                    fos.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                // ***********************
-
-                Intent intent = new Intent(AddModelActivity.this, SampleSelectActivity.class);
-                intent.putExtra("image_uri", image_uri);
+                Intent intent = new Intent(AddModelActivity.this, AddModelByPictureActivity.class);
                 resultModelLauncher.launch(intent);
             }
         });

@@ -13,7 +13,7 @@ import com.example.pesticide_pass.running_state.RunningState;
 import com.example.pesticide_pass.ui.login.LoginActivity;
 
 public class TempStartActivity extends AppCompatActivity {
-    
+
     // ......
 
     Button button1; // 添加
