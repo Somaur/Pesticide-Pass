@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.documentfile.provider.DocumentFile;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import android.content.ClipData;
@@ -19,10 +20,13 @@ import android.content.ContentUris;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -135,11 +139,12 @@ public class AddModelByPictureActivity extends AppCompatActivity {
                 Log.d("MainActivity","输出为："+requestCode);
 
                 //判断系统版本，4.4以上系统用这个方法处理图片
-                if (Build.VERSION.SDK_INT>=31){
-                    handleImageOnKiKat(data);
-                }else {
-                    handleImageBeforeKiKat1(data);
-                }
+                handleImageBeforeKiKat1(data);
+//                if (Build.VERSION.SDK_INT>=31){
+//                    handleImageOnKiKat(data);
+//                }else {
+//                    handleImageBeforeKiKat1(data);
+//                }
                 break;
 
             default:break;
@@ -192,7 +197,7 @@ public class AddModelByPictureActivity extends AppCompatActivity {
 
 //        Log.e("TAG", "imgPath: " + imgPath);
         displayImage(imgPath);//显示选中的图片
-
+    }
     private void decodeUri(Uri uri){
         String imgPath=null;
         if (DocumentsContract.isDocumentUri(this,uri)){
@@ -261,9 +266,9 @@ public class AddModelByPictureActivity extends AppCompatActivity {
             Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
             Bitmap bitmap2= BitmapCompressUtils.zoomImage(bitmap,(screen_width-30)/3,(screen_width-10)/3);
 
-            Log.e("TAG", bitmap.toString());
-            Log.e("TAG", imgUri.toString());
-            WriteBitmapToUri(AddModelByPictureActivity.this, bitmap, imgUri);
+            //Log.e("TAG", bitmap.toString());
+            //Log.e("TAG", imgUri.toString());
+            //WriteBitmapToUri(AddModelByPictureActivity.this, bitmap, imgUri);
 
             GridLayout mGridLayout =(GridLayout) findViewById(R.id.gridlayout);
             ImageView iv=new ImageView(getApplicationContext());
