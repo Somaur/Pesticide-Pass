@@ -12,6 +12,7 @@ import androidx.core.content.FileProvider;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -185,10 +186,11 @@ public class AddModelByPictureActivity extends AppCompatActivity {
          /*   String adb=imgUri.toString();
             Log.d("MainActivity","s输出为："+adb);*/
                 Log.d("MainActivity","输出为："+requestCode);
-
-                if (resultCode == Activity.RESULT_OK){
-                    //判断系统版本，4.4以上系统用这个方法处理图片
-                    handleImageBeforeKiKat(data);
+                //判断系统版本，4.4以上系统用这个方法处理图片
+                if (Build.VERSION.SDK_INT>=31){
+                    handleImageOnKiKat(data);
+                }else {
+                    handleImageBeforeKiKat1(data);
                 }
                 break;
 
@@ -201,9 +203,11 @@ public class AddModelByPictureActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(AddModelByPictureActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)!= PackageManager.PERMISSION_GRANTED){
             ActivityCompat.requestPermissions(AddModelByPictureActivity.this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
         }else {
-            openAlbum();
+            openAlbum1();
         }
     }
+
+
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode){
@@ -222,6 +226,14 @@ public class AddModelByPictureActivity extends AppCompatActivity {
         //这是正常的访问系统自带的文件管理器。但是setType只支持单个setType一般是以下这种(以只查看图片文件为例):
         intent.setType("image/*");
         startActivityForResult(intent,CHOSE_PHOTO);
+    }
+
+    private void openAlbum1() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent,"Select Picture"), CHOSE_PHOTO);
     }
 
     private void handleImageBeforeKiKat(Intent data) {
@@ -255,6 +267,51 @@ public class AddModelByPictureActivity extends AppCompatActivity {
 
     }
 
+    private void decodeUri(Uri uri){
+        String imgPath=null;
+        if (DocumentsContract.isDocumentUri(this,uri)){
+            //如果是Document类型的uri，则使用Document id处理
+            String docid=DocumentsContract.getDocumentId(uri);
+  /*1、“==”比较两个变量本身的值，即两个对象在内存中的首地址。
+            (java中，对象的首地址是它在内存中存放的起始地址，它后面的地址是用来存放它所包含的各个属性的地址，所以内存中会用多个内存块来存放对象的各个参数，
+            而通过这个首地址就可以找到该对象，进而可以找到该对象的各个属性)
+            2、“equals()”比较字符串中所包含的内容是否相同。*/
+            /*uri.getAuthority()返回此URL的权限部分，如果此URL没有权限，则返回null。*/
+
+            if ("com.android.providers.media.documents".equals(uri.getAuthority())){
+                String id = docid.split(":")[1];//解析出数字格式的 id
+                String selection = MediaStore.Images.Media._ID + "=" + id;
+                imgPath = getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection);
+            }else if("com.android.providers.downloads.documents".equals(uri.getAuthority())){
+                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(docid));
+                imgPath = getImagePath(contentUri, null);
+            }
+        }else if ("content".equalsIgnoreCase(uri.getScheme())){
+            //如果是 content 类型的 uri ， 则使用普通方式处理
+            imgPath = getImagePath(uri, null);
+        }else if("file".equalsIgnoreCase(uri.getScheme())){
+            //如果是 file 类型的 Uri，直接获取图片路径即可
+            imgPath = uri.getPath();
+        }
+        displayImage(imgPath);//显示选中的图片
+    }
+
+
+    private void handleImageBeforeKiKat1(Intent data) {
+        ClipData imageNames = data.getClipData();
+        if (imageNames != null){
+            for (int i=0; i<imageNames.getItemCount(); i++){
+                Uri uri = imageNames.getItemAt(i).getUri();
+                decodeUri(uri);
+            }
+            //uri = imageNames.getItemAt(0).getUri();
+        }else {
+            Uri uri = data.getData();
+            decodeUri(uri);
+            //fileList.add(uri.toString());
+        }
+    }
+
     @SuppressLint("Range")
     private String getImagePath(Uri uri, String selection) {
         String path = null;
@@ -263,7 +320,7 @@ public class AddModelByPictureActivity extends AppCompatActivity {
         if(cursor != null){
 
             Log.d("MainActivity","co count："+cursor.getColumnCount()
-            +"row"+cursor.getCount());
+                    +"row"+cursor.getCount());
             if(cursor.moveToFirst()){
                 path = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
             }
