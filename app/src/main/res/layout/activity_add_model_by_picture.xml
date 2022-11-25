@@ -30,20 +30,11 @@
         app:layout_constraintTop_toBottomOf="@id/take_photo"
         android:text="选择本地照片"/>
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/create_model"
-        android:text="创建模型"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/chose_photo"></Button>
-
-
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/create_model">
+        app:layout_constraintTop_toBottomOf="@id/chose_photo">
         <GridLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
