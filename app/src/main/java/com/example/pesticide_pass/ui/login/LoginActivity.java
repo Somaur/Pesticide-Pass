@@ -27,7 +27,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private LoginViewModel loginViewModel;
 private ActivityLoginBinding binding;
-
+    private int code=-1;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,9 +113,38 @@ private ActivityLoginBinding binding;
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadingProgressBar.setVisibility(View.VISIBLE);
-                loginViewModel.login(usernameEditText.getText().toString(),
-                        passwordEditText.getText().toString());
+                //创建一个线程
+                //username=123456 password=123456 nickname=LingTong
+                //真机测试需要关闭自己电脑的防火墙，Android Studio测试不需要关闭防火墙
+                Thread t1 = new Thread(new Runnable() {
+                    public void run() {
+
+                        //DBLogin.context=LoginActivity.this;
+                        if(DBLogin.linkMysql()){
+                            code=DBLogin.linkLoginsql(usernameEditText.getText().toString(),passwordEditText.getText().toString());
+                        }
+                        else{
+                            code=-1;
+                        }
+                    }
+                });
+                loadingProgressBar.setVisibility(View.VISIBLE);//这个动画不知道为啥不显示
+                t1.start();
+                try {
+                    t1.join();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                if(code==0){
+                    loginViewModel.login(usernameEditText.getText().toString(),
+                            passwordEditText.getText().toString());
+                    loadingProgressBar.setVisibility(View.INVISIBLE);
+                }
+                else {
+                    loadingProgressBar.setVisibility(View.INVISIBLE);
+                    Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

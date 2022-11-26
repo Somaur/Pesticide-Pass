@@ -1,6 +1,7 @@
 package com.example.pesticide_pass.data;
 
 import com.example.pesticide_pass.data.model.LoggedInUser;
+import com.example.pesticide_pass.ui.login.DBLogin;
 
 import java.io.IOException;
 
@@ -17,7 +18,7 @@ public class LoginDataSource {
             LoggedInUser fakeUser =
                     new LoggedInUser(
                             java.util.UUID.randomUUID().toString(),
-                            username);
+                            DBLogin.getnickname());
             return new Result.Success<>(fakeUser);
         } catch (Exception e) {
             // 登录失败走这里
