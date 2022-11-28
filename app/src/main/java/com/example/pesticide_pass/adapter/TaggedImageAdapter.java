@@ -1,9 +1,6 @@
 package com.example.pesticide_pass.adapter;
 
-import static android.app.Activity.RESULT_OK;
-
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -16,34 +13,43 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.documentfile.provider.DocumentFile;
 
-import com.example.pesticide_pass.AddModelActivity;
 import com.example.pesticide_pass.R;
-import com.example.pesticide_pass.SampleSelectActivity;
 import com.example.pesticide_pass.data.ImageTag;
 import com.example.pesticide_pass.data.TaggedImage;
+import com.example.pesticide_pass.tools.GetSampleLifecycleObserver;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class TaggedImageAdapter extends BaseAdapter {
 
-    private Context           context;
-    private List<TaggedImage> taggedImages;
-    private List<Double> values;
+    private final Context           context;
+    private final List<TaggedImage> taggedImages;
+    private final List<Double>      values;
 
-    private ICallback mainActivity;
+    private final GetSampleLifecycleObserver getSampleLifecycleObserver;
 
-    public TaggedImageAdapter(Context context, List<TaggedImage> data, ICallback activity) {
-        this.mainActivity = activity;
+    private class mGetSample implements GetSampleLifecycleObserver.ReceiveSample {
+        int i;
+        public mGetSample (int i) {
+            this.i = i;
+        }
+        @Override
+        public void receive(ImageTag tag, Uri uri) {
+            getTaggedImage(i).setTag(tag, context);
+            notifyDataSetChanged();
+        }
+    }
+
+    public TaggedImageAdapter(Context context, List<TaggedImage> data, GetSampleLifecycleObserver getSampleLifecycleObserver) {
         this.context = context;
+        this.getSampleLifecycleObserver = getSampleLifecycleObserver;
         if (data != null) this.taggedImages = data;
         else this.taggedImages = new ArrayList<>();
-        this.values = new ArrayList<Double>();
-        for (int i = 0; i < data.size(); ++i) this.values.add(0d);
+        this.values = new ArrayList<>();
+        if (data != null) for (int i = 0; i < data.size(); ++i) this.values.add(0d);
     }
 
     public void addTaggedImage(TaggedImage ti) {
@@ -124,9 +130,9 @@ public class TaggedImageAdapter extends BaseAdapter {
         @Override
         public void onClick(View view) {
             // change Tag
-            Intent intent = new Intent(context, SampleSelectActivity.class);
-            intent.putExtra("image_uri", taggedImages.get(holder.i).getUri());
-            mainActivity.launch(intent, holder.i);
+            getSampleLifecycleObserver.setReceive(new mGetSample(holder.i));
+            getSampleLifecycleObserver.setImgUri(taggedImages.get(holder.i).getUri());
+            getSampleLifecycleObserver.launch();
         }
     }
 
@@ -174,9 +180,5 @@ public class TaggedImageAdapter extends BaseAdapter {
                 values.set(holder.i, Double.parseDouble(editable.toString()));
             }
         }
-    }
-
-    public interface ICallback {
-        void launch(Intent intent, int i);
     }
 }
