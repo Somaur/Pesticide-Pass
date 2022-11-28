@@ -15,7 +15,7 @@
 
 ### 程序
 
-- 获取图片：🟢完成
+- 获取图片：🟡进行中 = zyl
 
 - 图片取样：🟢完成
 
@@ -25,11 +25,11 @@
 
 - 从模型预测：🟡进行中 = hzl
 
-- 生成分享图片：🟡进行中 = hzl
+- 生成分享图片：🟡进行中 = wrj
 
-- 调用系统分享：⚪未开始
+- 调用系统分享：🟡进行中 = hzl
 
-- 管理模型列表：⚪未开始
+- 管理模型列表：🟡进行中 = hzl
 
 - 登录远程服务器：🟡进行中 = lt
 
@@ -40,5 +40,5 @@
 ### 使用第三方库
 
 - com.androidplot:androidplot-core:1.5.10
+
 - org.apache.commons:commons-math3:3.6.1
-- com.github.GitSmark:ActionSheet:1.0.2
