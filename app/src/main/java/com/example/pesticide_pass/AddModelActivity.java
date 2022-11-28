@@ -1,21 +1,17 @@
 package com.example.pesticide_pass;
 
-import static com.example.pesticide_pass.tools.Image.to600_600;
-
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -23,21 +19,18 @@ import com.example.pesticide_pass.adapter.TaggedImageAdapter;
 import com.example.pesticide_pass.data.ImageTag;
 import com.example.pesticide_pass.data.TaggedImage;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 
 public class AddModelActivity extends AppCompatActivity implements TaggedImageAdapter.ICallback {
 
     Button btn_add_img;
     Button btn_create_model;
     ListView lv;
+    EditText et1;
 
     TaggedImageAdapter lvAdapter;
 
-    private final ActivityResultLauncher<Intent> resultModelLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<Intent> addImgLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
@@ -55,13 +48,10 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_model);
 
-        Intent intent = new Intent();
-        intent.putExtra("model_id", "AAA");
-        setResult(RESULT_OK, intent);
-
         btn_add_img = findViewById(R.id.btn1);
         btn_create_model = findViewById(R.id.btn2);
         lv = findViewById(R.id.lv);
+        et1 = findViewById(R.id.et1);
 
         lvAdapter = new TaggedImageAdapter(this, new ArrayList<>(), this);
         lv.setAdapter(lvAdapter);
@@ -69,7 +59,7 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AddModelActivity.this, AddModelByPictureActivity.class);
-                resultModelLauncher.launch(intent);
+                addImgLauncher.launch(intent);
             }
         });
 
@@ -80,6 +70,11 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
                     Toast.makeText(AddModelActivity.this, "请设置两张及以上图片！", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if (et1.getText().length() == 0) {
+                    Toast.makeText(AddModelActivity.this, "请输入模型名称！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String name = et1.getText().toString();
                 ArrayList<Double> xPos = new ArrayList<>();
                 ArrayList<Double> yPos = new ArrayList<>();
                 for (int i = 0; i < lvAdapter.getCount(); ++i) {
@@ -91,9 +86,14 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
                     yPos.add(lvAdapter.getValue(i));
                 }
                 Intent intent = new Intent(AddModelActivity.this, CreateModelActivity.class);
+                intent.putExtra("name", name);
                 intent.putExtra("xPos", xPos);
                 intent.putExtra("yPos", yPos);
                 startActivity(intent);
+
+                Intent retIntent = new Intent();
+                retIntent.putExtra("model_name", name);
+                setResult(RESULT_OK, retIntent);
                 finish();
             }
         });
@@ -101,8 +101,8 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
 
 
 
-    private ChangeTagOnAdapter changeTagOnAdapter = new ChangeTagOnAdapter();
-    private final ActivityResultLauncher<Intent> changeTagLauncher = registerForActivityResult(
+    private final ChangeTagOnAdapter             changeTagOnAdapter = new ChangeTagOnAdapter();
+    private final ActivityResultLauncher<Intent> changeTagLauncher  = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             changeTagOnAdapter
     );
