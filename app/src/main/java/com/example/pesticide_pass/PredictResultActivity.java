@@ -1,8 +1,14 @@
 package com.example.pesticide_pass;
 
+import static com.example.pesticide_pass.tools.FileTools.WriteBitmapToUri;
+import static com.example.pesticide_pass.tools.FileTools.getNewTempUri;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -115,6 +121,18 @@ public class PredictResultActivity extends AppCompatActivity {
         btn1.setOnClickListener(view -> actionSheet.show());
         btn2.setOnClickListener(view -> {
             // TODO: 生成分享图片
+            linearLayout.setDrawingCacheEnabled(true);
+            linearLayout.buildDrawingCache();
+            Bitmap bmp = Bitmap.createBitmap(linearLayout.getDrawingCache());
+            linearLayout.destroyDrawingCache();
+            Uri uri = getNewTempUri(this, "share.jpg");
+            WriteBitmapToUri(this, bmp, uri);
+            Intent shareIntent = new Intent();
+            shareIntent.setAction(Intent.ACTION_SEND);
+            shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+            shareIntent.setType("image/*");
+            shareIntent = Intent.createChooser(shareIntent, "Share");
+            startActivity(shareIntent);
         });
         btn3.setOnClickListener(view -> finish());
     }
