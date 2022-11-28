@@ -139,7 +139,9 @@ public class AddModelByPictureActivity extends AppCompatActivity {
                 Log.d("MainActivity","输出为："+requestCode);
 
                 //判断系统版本，4.4以上系统用这个方法处理图片
+                imgUri = getNewTempUri(AddModelByPictureActivity.this, "temp_image.jpg");
                 handleImageBeforeKiKat1(data);
+                uriList.add(imgUri);
 //                if (Build.VERSION.SDK_INT>=31){
 //                    handleImageOnKiKat(data);
 //                }else {
@@ -267,8 +269,8 @@ public class AddModelByPictureActivity extends AppCompatActivity {
             Bitmap bitmap2= BitmapCompressUtils.zoomImage(bitmap,(screen_width-30)/3,(screen_width-10)/3);
 
             //Log.e("TAG", bitmap.toString());
-            //Log.e("TAG", imgUri.toString());
-            //WriteBitmapToUri(AddModelByPictureActivity.this, bitmap, imgUri);
+//            Log.e("TAG", imgUri.toString());
+            WriteBitmapToUri(AddModelByPictureActivity.this, bitmap, imgUri);
 
             GridLayout mGridLayout =(GridLayout) findViewById(R.id.gridlayout);
             ImageView iv=new ImageView(getApplicationContext());

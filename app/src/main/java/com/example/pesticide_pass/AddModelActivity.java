@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,10 +26,11 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
     Button btn_add_img;
     Button btn_create_model;
     ListView lv;
+    EditText et1;
 
     TaggedImageAdapter lvAdapter;
 
-    private final ActivityResultLauncher<Intent> resultModelLauncher = registerForActivityResult(
+    private final ActivityResultLauncher<Intent> addImgLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == RESULT_OK && result.getData() != null) {
@@ -46,13 +48,10 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_model);
 
-        Intent intent = new Intent();
-        intent.putExtra("model_id", "AAA");
-        setResult(RESULT_OK, intent);
-
         btn_add_img = findViewById(R.id.btn1);
         btn_create_model = findViewById(R.id.btn2);
         lv = findViewById(R.id.lv);
+        et1 = findViewById(R.id.et1);
 
         lvAdapter = new TaggedImageAdapter(this, new ArrayList<>(), this);
         lv.setAdapter(lvAdapter);
@@ -60,7 +59,7 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AddModelActivity.this, AddModelByPictureActivity.class);
-                resultModelLauncher.launch(intent);
+                addImgLauncher.launch(intent);
             }
         });
 
@@ -71,6 +70,11 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
                     Toast.makeText(AddModelActivity.this, "请设置两张及以上图片！", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if (et1.getText().length() == 0) {
+                    Toast.makeText(AddModelActivity.this, "请输入模型名称！", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                String name = et1.getText().toString();
                 ArrayList<Double> xPos = new ArrayList<>();
                 ArrayList<Double> yPos = new ArrayList<>();
                 for (int i = 0; i < lvAdapter.getCount(); ++i) {
@@ -82,9 +86,14 @@ public class AddModelActivity extends AppCompatActivity implements TaggedImageAd
                     yPos.add(lvAdapter.getValue(i));
                 }
                 Intent intent = new Intent(AddModelActivity.this, CreateModelActivity.class);
+                intent.putExtra("name", name);
                 intent.putExtra("xPos", xPos);
                 intent.putExtra("yPos", yPos);
                 startActivity(intent);
+
+                Intent retIntent = new Intent();
+                retIntent.putExtra("model_name", name);
+                setResult(RESULT_OK, retIntent);
                 finish();
             }
         });
