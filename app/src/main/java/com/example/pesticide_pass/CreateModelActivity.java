@@ -55,12 +55,9 @@ public class CreateModelActivity extends AppCompatActivity {
         ModelsRepository.getInstance(this).fittedModels.add(new FittedModel(name, coeff[1], coeff[0]));
         ModelsRepository.saveToLocale(this);
 
-        btn1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mySetResult();
-                finish();
-            }
+        btn1.setOnClickListener(view -> {
+            mySetResult();
+            finish();
         });
     }
 
@@ -81,6 +78,14 @@ public class CreateModelActivity extends AppCompatActivity {
         double x2 = Collections.max(xPos);
         double y1 = Collections.min(yPos);
         double y2 = Collections.max(yPos);
+        if (x2 - x1 < 5) {
+            x1 -= (5 + x1 - x2) / 2;
+            x2 += (5 + x1 - x2) / 2;
+        }
+        if (y2 - y1 < 5) {
+            y1 -= (5 + y1 - y2) / 2;
+            y2 += (5 + y1 - y2) / 2;
+        }
         double xStep = (x2 - x1) / 10;
         double yStep = (y2 - y1) / 10;
         plot.setDomainBoundaries(x1 - xStep, x2 + xStep, BoundaryMode.FIXED);

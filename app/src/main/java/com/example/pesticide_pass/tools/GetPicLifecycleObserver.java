@@ -30,12 +30,12 @@ import java.util.List;
 public class GetPicLifecycleObserver implements DefaultLifecycleObserver {
 
     private final ActivityResultRegistry mRegistry;
-    private       Context                context;
-    private       Uri                    imgUri;
+    private final Context                context;
 
     private ReceivePicUri     receivePicUri;
     private ReceivePicUriList receivePicUriList;
     private boolean           takeSinglePic;
+    private Uri               imgUri;
 
     private final String temp_file_name = "temp_image.jpg";
 
@@ -117,19 +117,19 @@ public class GetPicLifecycleObserver implements DefaultLifecycleObserver {
         ClipData imageNames = data.getClipData();
         if (imageNames != null) {
             ArrayList<Uri> uriList = new ArrayList<>();
-            for (int i=0; i<imageNames.getItemCount(); i++){
+            for (int i = 0; i < imageNames.getItemCount(); i++) {
                 Uri uri = imageNames.getItemAt(i).getUri();
-                uri = moveToCache(uri);
-                if (uri != null) uriList.add(uri);
+                Uri new_uri = moveToCache(uri);
+                if (new_uri != null) uriList.add(new_uri);
             }
             receivePicUriList.receive(uriList);
         } else {
             Uri uri = data.getData();
-            uri = moveToCache(uri);
-            if (takeSinglePic) receivePicUri.receive(uri);
+            Uri new_uri = moveToCache(uri);
+            if (takeSinglePic) receivePicUri.receive(new_uri);
             else {
                 ArrayList<Uri> uriList = new ArrayList<>();
-                if (uri != null) uriList.add(uri);
+                if (new_uri != null) uriList.add(new_uri);
                 receivePicUriList.receive(uriList);
             }
         }

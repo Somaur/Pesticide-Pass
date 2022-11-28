@@ -97,8 +97,8 @@ public class AddModelActivity extends AppCompatActivity{
                     Toast.makeText(AddModelActivity.this, "有图片未取样！", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                xPos.add(lvAdapter.getTaggedImage(i).getGrayscale());
-                yPos.add(lvAdapter.getValue(i));
+                xPos.add(lvAdapter.getValue(i));
+                yPos.add(lvAdapter.getTaggedImage(i).getGrayscale());
             }
             Intent intent = new Intent(AddModelActivity.this, CreateModelActivity.class);
             intent.putExtra("name", name);
@@ -111,5 +111,11 @@ public class AddModelActivity extends AppCompatActivity{
             setResult(RESULT_OK, retIntent);
             finish();
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        actionSheet.dismiss();
     }
 }

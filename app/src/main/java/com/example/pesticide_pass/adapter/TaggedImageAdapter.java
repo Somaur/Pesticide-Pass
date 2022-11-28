@@ -117,8 +117,8 @@ public class TaggedImageAdapter extends BaseAdapter {
         public ImageView iv1;
         public ImageView iv2;
         public EditText  et1;
-        public Button btn1;
-        public int    i;
+        public Button    btn1;
+        public int       i;
     }
 
     private class btn1ClickListener implements View.OnClickListener {
