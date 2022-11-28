@@ -54,7 +54,6 @@ public class ModelsRepository {
             }
 
             JSONArray jsonArray = new JSONArray(sb.toString());
-            Log.e("JSON", sb.toString());
             for (int i = 0; i < jsonArray.length(); ++i) {
                 FittedModel m = FittedModel.parseJSON((JSONObject)jsonArray.get(i));
                 if (m != null) ret.add(m);
