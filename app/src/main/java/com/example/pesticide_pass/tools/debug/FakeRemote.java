@@ -11,6 +11,8 @@ import java.util.List;
 public class FakeRemote {
 
     private static ArrayList<FittedModel> fittedModels;
+    private static String _username = "user";
+    private static String _password = "123456";
 
     public static ArrayList<FittedModel> getModels() {
         if(fittedModels == null){
@@ -26,5 +28,13 @@ public class FakeRemote {
 
     public static void upLoad(List<FittedModel> models) {
         fittedModels.addAll(models);
+    }
+
+    public static boolean checkLogin(String username, String password) {
+        return username.equals(_username) && password.equals(_password);
+    }
+
+    public static void changePassword(String password) {
+        _password = password;
     }
 }

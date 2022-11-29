@@ -24,6 +24,7 @@ import com.example.pesticide_pass.R;
 import com.example.pesticide_pass.adapter.FittedModelListAdapter;
 import com.example.pesticide_pass.data.FittedModel;
 import com.example.pesticide_pass.data.ModelsRepository;
+import com.example.pesticide_pass.tools.Remote;
 import com.example.pesticide_pass.tools.debug.FakeRemote;
 
 import org.json.JSONArray;
@@ -122,7 +123,7 @@ public class LocaleModelsFragment extends Fragment {
         // 上传
         btn3.setOnClickListener(view15 -> {
             //...
-            FakeRemote.upLoad(adapter.getSelectedModels());
+            Remote.upLoad(adapter.getSelectedModels());
         });
         // 全选
         btn4.setOnClickListener(view14 -> adapter.selectAll());

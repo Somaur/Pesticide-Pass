@@ -21,6 +21,7 @@ import com.example.pesticide_pass.R;
 import com.example.pesticide_pass.adapter.FittedModelListAdapter;
 import com.example.pesticide_pass.data.FittedModel;
 import com.example.pesticide_pass.data.ModelsRepository;
+import com.example.pesticide_pass.tools.Remote;
 import com.example.pesticide_pass.tools.debug.FakeRemote;
 
 import java.util.List;
@@ -32,12 +33,10 @@ import java.util.List;
  */
 public class RemoteModelsFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -53,7 +52,6 @@ public class RemoteModelsFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment RemoteModelsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static RemoteModelsFragment newInstance(String param1, String param2) {
         RemoteModelsFragment fragment = new RemoteModelsFragment();
         Bundle args = new Bundle();
@@ -96,7 +94,7 @@ public class RemoteModelsFragment extends Fragment {
         btn5 = view.findViewById(R.id.btn5);
         btn6 = view.findViewById(R.id.btn6);
         tv1 = view.findViewById(R.id.tv1);
-        List<FittedModel> models = FakeRemote.getModels();  // 不同处在这
+        List<FittedModel> models = Remote.getModels();  // 不同处在这
         adapter = new FittedModelListAdapter(getContext(), models);
         lv.setAdapter(adapter);
         lv.setEmptyView(tv1);
