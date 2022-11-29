@@ -1,4 +1,4 @@
-package com.example.pesticide_pass;
+package com.example.pesticide_pass.ui.manage;
 
 import android.os.Bundle;
 
@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.example.pesticide_pass.R;
 
 /**
  * A simple {@link Fragment} subclass.

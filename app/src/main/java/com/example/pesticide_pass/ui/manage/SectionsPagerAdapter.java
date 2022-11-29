@@ -1,4 +1,4 @@
-package com.example.pesticide_pass.ui.main;
+package com.example.pesticide_pass.ui.manage;
 
 import static com.example.pesticide_pass.running_state.RunningState.logged_in;
 
@@ -10,10 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
-import com.example.pesticide_pass.LocaleModelsFragment;
-import com.example.pesticide_pass.NeedLoginAlertFragment;
 import com.example.pesticide_pass.R;
-import com.example.pesticide_pass.RemoteModelsFragment;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to

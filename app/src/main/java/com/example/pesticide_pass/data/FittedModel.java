@@ -1,10 +1,13 @@
 package com.example.pesticide_pass.data;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 public class FittedModel {
     private final String name;
@@ -52,6 +55,40 @@ public class FittedModel {
             ret.put("b", b);
             ret.put("create_time", create_time);
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ret;
+    }
+
+    public static JSONArray listToJSON(List<FittedModel> models) {
+        JSONArray jsonArray = new JSONArray();
+        for (FittedModel model : models) {
+            JSONObject jsonObject = model.toJSON();
+            if (jsonObject != null) jsonArray.put(jsonObject);
+        }
+        return jsonArray;
+    }
+
+    public static ArrayList<FittedModel> parseJSONArray(JSONArray jsonArray) {
+        ArrayList<FittedModel> ret = new ArrayList<>();
+        for (int i = 0; i < jsonArray.length(); ++i) {
+            FittedModel m = null;
+            try {
+                m = FittedModel.parseJSON((JSONObject)jsonArray.get(i));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (m != null) ret.add(m);
+        }
+        return ret;
+    }
+
+    public static ArrayList<FittedModel> parseJSONArrayString(String str) {
+        ArrayList<FittedModel> ret = new ArrayList<>();
+        try {
+            JSONArray jsonArray = new JSONArray(str);
+            ret = parseJSONArray(jsonArray);
+        } catch (JSONException e) {
             e.printStackTrace();
         }
         return ret;
