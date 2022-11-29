@@ -6,6 +6,16 @@
     android:layout_height="match_parent"
     tools:context=".SampleSelectActivity">
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="40dp"
+        android:text="点击图片进行取样"
+        android:textSize="34sp"
+        app:layout_constraintBottom_toTopOf="@+id/iv1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
     <ImageView
         android:id="@+id/iv1"
         android:layout_width="300dp"

@@ -73,11 +73,17 @@
 
     </LinearLayout>
 
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>
+
     <Button
         android:id="@+id/btn2"
         android:layout_width="200dp"
         android:layout_height="60dp"
         android:layout_marginTop="28dp"
+        android:layout_marginBottom="30dp"
         android:text="选择图片 进行预测"
         android:textSize="18sp"/>
 </LinearLayout>

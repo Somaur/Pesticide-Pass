@@ -1,5 +1,7 @@
 package com.example.pesticide_pass;
 
+import static com.example.pesticide_pass.running_state.RunningState.predictLimitCache;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
@@ -80,6 +82,7 @@ public class ModelPredictionActivity extends AppCompatActivity {
             try {
                 double limit = Double.parseDouble(et1.getText().toString());
                 intent.putExtra("limit", limit);
+                predictLimitCache = et1.getText().toString();
             } catch (Exception ignored) {}
             startActivity(intent);
             finish();
@@ -90,6 +93,7 @@ public class ModelPredictionActivity extends AppCompatActivity {
         btn1 = findViewById(R.id.btn1);
         btn2 = findViewById(R.id.btn2);
         et1 = findViewById(R.id.et1);
+        if (predictLimitCache != null) et1.setText(predictLimitCache);
         actionSheet = new ActionSheet.DialogBuilder(this)
                 .addSheet("拍照", view -> {
                     getPicLifecycleObserver.setTake_photo(uri -> {
