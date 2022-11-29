@@ -1,5 +1,8 @@
 package com.example.pesticide_pass.data;
 
+import static com.example.pesticide_pass.data.FittedModel.listToJSON;
+import static com.example.pesticide_pass.data.FittedModel.parseJSONArray;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -54,10 +57,7 @@ public class ModelsRepository {
             }
 
             JSONArray jsonArray = new JSONArray(sb.toString());
-            for (int i = 0; i < jsonArray.length(); ++i) {
-                FittedModel m = FittedModel.parseJSON((JSONObject)jsonArray.get(i));
-                if (m != null) ret.add(m);
-            }
+            ret = parseJSONArray(jsonArray);
         } catch (IOException | JSONException e) {
             e.printStackTrace();
         }
@@ -66,10 +66,7 @@ public class ModelsRepository {
     private static void writeLocalModels(Context context, ArrayList<FittedModel> models) {
         ArrayList<FittedModel> ret = new ArrayList<>();
         try {
-            JSONArray jsonArray = new JSONArray();
-            for (int i = 0; i < models.size(); ++i) {
-                jsonArray.put(models.get(i).toJSON());
-            }
+            JSONArray jsonArray = listToJSON(models);
 
             FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE);
             PrintStream ps = new PrintStream(fos);

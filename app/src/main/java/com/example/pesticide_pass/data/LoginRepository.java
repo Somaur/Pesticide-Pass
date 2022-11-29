@@ -1,5 +1,7 @@
 package com.example.pesticide_pass.data;
 
+import android.util.Log;
+
 import com.example.pesticide_pass.data.model.LoggedInUser;
 import com.example.pesticide_pass.running_state.RunningState;
 
@@ -48,6 +50,7 @@ public class LoginRepository {
     public Result<LoggedInUser> login(String username, String password) {
         // handle login
         Result<LoggedInUser> result = dataSource.login(username, password);
+        Log.e("LOGIN_RESULT", result.toString());
         if (result instanceof Result.Success) {
             // 登录成功的后续处理就在这里
             setLoggedInUser(((Result.Success<LoggedInUser>) result).getData());

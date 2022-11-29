@@ -23,7 +23,7 @@ import com.example.pesticide_pass.tools.GetSampleLifecycleObserver;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaggedImageAdapter extends BaseAdapter {
+public class TaggedImageListAdapter extends BaseAdapter {
 
     private final Context           context;
     private final List<TaggedImage> taggedImages;
@@ -43,7 +43,7 @@ public class TaggedImageAdapter extends BaseAdapter {
         }
     }
 
-    public TaggedImageAdapter(Context context, List<TaggedImage> data, GetSampleLifecycleObserver getSampleLifecycleObserver) {
+    public TaggedImageListAdapter(Context context, List<TaggedImage> data, GetSampleLifecycleObserver getSampleLifecycleObserver) {
         this.context = context;
         this.getSampleLifecycleObserver = getSampleLifecycleObserver;
         if (data != null) this.taggedImages = data;
@@ -112,7 +112,7 @@ public class TaggedImageAdapter extends BaseAdapter {
         return view;
     }
 
-    static class Holder {
+    private static class Holder {
         public TextView  tv3;
         public ImageView iv1;
         public ImageView iv2;
@@ -149,7 +149,7 @@ public class TaggedImageAdapter extends BaseAdapter {
             taggedImages.remove(holder.i);
             values.remove(holder.i);
             DocumentFile.fromSingleUri(context.getApplicationContext(), uri).delete();
-            TaggedImageAdapter.this.notifyDataSetChanged();
+            notifyDataSetChanged();
         }
     }
 
