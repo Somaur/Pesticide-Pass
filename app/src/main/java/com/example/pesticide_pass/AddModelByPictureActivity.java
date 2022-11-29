@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+// 该窗体已经不再出现于应用中
 public class AddModelByPictureActivity extends AppCompatActivity {
 
     Button take_photo;

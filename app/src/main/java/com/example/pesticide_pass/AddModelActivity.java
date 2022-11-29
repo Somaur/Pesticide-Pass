@@ -10,7 +10,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.pesticide_pass.adapter.TaggedImageAdapter;
+import com.example.pesticide_pass.adapter.TaggedImageListAdapter;
 import com.example.pesticide_pass.data.ImageTag;
 import com.example.pesticide_pass.data.TaggedImage;
 import com.example.pesticide_pass.tools.GetPicLifecycleObserver;
@@ -27,7 +27,7 @@ public class AddModelActivity extends AppCompatActivity{
     private EditText et1;
     private ActionSheet actionSheet;
 
-    private TaggedImageAdapter lvAdapter;
+    private TaggedImageListAdapter lvAdapter;
 
     private GetPicLifecycleObserver    getPicLifecycleObserver;
     private GetSampleLifecycleObserver getSampleLifecycleObserver;
@@ -55,7 +55,7 @@ public class AddModelActivity extends AppCompatActivity{
         lv = findViewById(R.id.lv);
         et1 = findViewById(R.id.et1);
 
-        lvAdapter = new TaggedImageAdapter(this, new ArrayList<>(), getSampleLifecycleObserver);
+        lvAdapter = new TaggedImageListAdapter(this, new ArrayList<>(), getSampleLifecycleObserver);
         lv.setAdapter(lvAdapter);
 
         actionSheet = new ActionSheet.DialogBuilder(this)

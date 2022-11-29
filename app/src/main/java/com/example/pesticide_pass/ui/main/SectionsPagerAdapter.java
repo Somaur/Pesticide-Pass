@@ -1,5 +1,7 @@
 package com.example.pesticide_pass.ui.main;
 
+import static com.example.pesticide_pass.running_state.RunningState.logged_in;
+
 import android.content.Context;
 
 import androidx.annotation.Nullable;
@@ -8,7 +10,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
+import com.example.pesticide_pass.LocaleModelsFragment;
+import com.example.pesticide_pass.NeedLoginAlertFragment;
 import com.example.pesticide_pass.R;
+import com.example.pesticide_pass.RemoteModelsFragment;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
@@ -27,9 +32,15 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        // getItem is called to instantiate the fragment for the given page.
-        // Return a PlaceholderFragment (defined as a static inner class below).
-        return PlaceholderFragment.newInstance(position + 1);
+        Fragment fragment;
+        if (position == 0) {
+            fragment = LocaleModelsFragment.newInstance("AAA", "[BBB]");
+        }
+        else {
+            if (logged_in) fragment = RemoteModelsFragment.newInstance("AAA", "[BBB]");
+            else fragment = NeedLoginAlertFragment.newInstance("AAA", "[BBB]");
+        }
+        return fragment;
     }
 
     @Nullable
