@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingTop="5dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    tools:context=".PredictResultActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="预测成功！"
+        android:textSize="36sp"/>
+
+    <TextView
+        android:id="@+id/tv1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="预测浓度："
+        android:textSize="30sp"/>
+
+    <com.androidplot.xy.XYPlot
+        style="@style/APDefacto.Light"
+        android:id="@+id/plot"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:layout_marginTop="12dp"
+        app:title="浓度-明度模型"
+        app:rangeTitle="明度"
+        app:domainTitle="浓度"
+        app:lineLabels="left|bottom"
+        app:lineLabelRotationBottom="-45"/>
+
+    <TextView
+        android:id="@+id/tv2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="未设置阈值"
+        android:textSize="24sp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp">
+
+        <Button
+            android:id="@+id/btn1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="预测新的图片"
+            android:drawableLeft="@drawable/ic_baseline_repeat_24"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/btn2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="20dp"
+            android:text="分享预测结果"
+            android:drawableLeft="@drawable/ic_baseline_share_24"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btn3"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="10dp"
+        android:text="结束"
+        android:textSize="24sp"/>
+
+</LinearLayout>

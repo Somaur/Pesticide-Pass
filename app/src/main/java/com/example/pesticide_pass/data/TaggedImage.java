@@ -9,12 +9,11 @@ import android.graphics.Color;
 import android.net.Uri;
 
 import java.io.FileNotFoundException;
-import java.io.Serializable;
 
 public class TaggedImage {
 
-    private Uri    uri;
-    private ImageTag tag;
+    private final Uri      uri;
+    private       ImageTag tag;
     private double   grayscale = 0.0;
 
     public TaggedImage(Uri uri, ImageTag tag, Context context) {

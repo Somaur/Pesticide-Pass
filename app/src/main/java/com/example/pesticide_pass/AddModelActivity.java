@@ -1,130 +1,121 @@
 package com.example.pesticide_pass;
 
-import static com.example.pesticide_pass.tools.Image.to600_600;
-
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.pesticide_pass.adapter.TaggedImageAdapter;
 import com.example.pesticide_pass.data.ImageTag;
 import com.example.pesticide_pass.data.TaggedImage;
+import com.example.pesticide_pass.tools.GetPicLifecycleObserver;
+import com.example.pesticide_pass.tools.GetSampleLifecycleObserver;
+import com.huangxy.actionsheet.ActionSheet;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Locale;
 
-public class AddModelActivity extends AppCompatActivity implements TaggedImageAdapter.ICallback {
+public class AddModelActivity extends AppCompatActivity{
 
-    Button btn_add_img;
-    Button btn_create_model;
-    ListView lv;
+    private Button btn_add_img;
+    private Button btn_create_model;
+    private ListView lv;
+    private EditText et1;
+    private ActionSheet actionSheet;
 
-    TaggedImageAdapter lvAdapter;
+    private TaggedImageAdapter lvAdapter;
 
-    private final ActivityResultLauncher<Intent> resultModelLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                    ArrayList<Uri> image_uris = result.getData().getParcelableArrayListExtra("image_uris");
-                    for (Uri uri : image_uris) {
-                        lvAdapter.addTaggedImage(new TaggedImage(uri, null, AddModelActivity.this));
-                    }
-                    lvAdapter.notifyDataSetChanged();
-                }
-            }
-    );
+    private GetPicLifecycleObserver    getPicLifecycleObserver;
+    private GetSampleLifecycleObserver getSampleLifecycleObserver;
+
+    private class mGetSample implements GetSampleLifecycleObserver.ReceiveSample {
+        @Override
+        public void receive(ImageTag tag, Uri uri) {
+            lvAdapter.addTaggedImage(new TaggedImage(uri, tag, AddModelActivity.this));
+            lvAdapter.notifyDataSetChanged();
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_model);
 
-        Intent intent = new Intent();
-        intent.putExtra("model_id", "AAA");
-        setResult(RESULT_OK, intent);
+        getPicLifecycleObserver = new GetPicLifecycleObserver(this, getActivityResultRegistry());
+        getLifecycle().addObserver(getPicLifecycleObserver);
+        getSampleLifecycleObserver = new GetSampleLifecycleObserver(this, getActivityResultRegistry());
+        getLifecycle().addObserver(getSampleLifecycleObserver);
 
         btn_add_img = findViewById(R.id.btn1);
         btn_create_model = findViewById(R.id.btn2);
         lv = findViewById(R.id.lv);
+        et1 = findViewById(R.id.et1);
 
-        lvAdapter = new TaggedImageAdapter(this, new ArrayList<>(), this);
+        lvAdapter = new TaggedImageAdapter(this, new ArrayList<>(), getSampleLifecycleObserver);
         lv.setAdapter(lvAdapter);
-        btn_add_img.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(AddModelActivity.this, AddModelByPictureActivity.class);
-                resultModelLauncher.launch(intent);
-            }
-        });
 
-        btn_create_model.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (lvAdapter.getCount() < 2) {
-                    Toast.makeText(AddModelActivity.this, "请设置两张及以上图片！", Toast.LENGTH_SHORT).show();
+        actionSheet = new ActionSheet.DialogBuilder(this)
+                .addSheet("拍照", view -> {
+                    getPicLifecycleObserver.setTake_photo(uri -> {
+                        getSampleLifecycleObserver.setReceive(new mGetSample());
+                        getSampleLifecycleObserver.setImgUri(uri);
+                        getSampleLifecycleObserver.launch();
+                    });
+                    actionSheet.hide();
+                })
+                .addSheet("从相册获取图片", view -> {
+                    getPicLifecycleObserver.setChose_photo((GetPicLifecycleObserver.ReceivePicUriList) uriList -> {
+                        for (Uri uri : uriList)
+                            lvAdapter.addTaggedImage(new TaggedImage(uri, null, AddModelActivity.this));
+                        lvAdapter.notifyDataSetChanged();
+                    });
+                    actionSheet.hide();
+                })
+                .addCancelListener(v -> actionSheet.hide())
+                .create();
+
+        btn_add_img.setOnClickListener(view -> actionSheet.show());
+
+        btn_create_model.setOnClickListener(view -> {
+            if (lvAdapter.getCount() < 2) {
+                Toast.makeText(AddModelActivity.this, "请设置两张及以上图片！", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (et1.getText().length() == 0) {
+                Toast.makeText(AddModelActivity.this, "请输入模型名称！", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            String name = et1.getText().toString();
+            ArrayList<Double> xPos = new ArrayList<>();
+            ArrayList<Double> yPos = new ArrayList<>();
+            for (int i = 0; i < lvAdapter.getCount(); ++i) {
+                if (!lvAdapter.getTaggedImage(i).isTagged()) {
+                    Toast.makeText(AddModelActivity.this, "有图片未取样！", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                ArrayList<Double> xPos = new ArrayList<>();
-                ArrayList<Double> yPos = new ArrayList<>();
-                for (int i = 0; i < lvAdapter.getCount(); ++i) {
-                    if (!lvAdapter.getTaggedImage(i).isTagged()) {
-                        Toast.makeText(AddModelActivity.this, "有图片未取样！", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    xPos.add(lvAdapter.getTaggedImage(i).getGrayscale());
-                    yPos.add(lvAdapter.getValue(i));
-                }
-                Intent intent = new Intent(AddModelActivity.this, CreateModelActivity.class);
-                intent.putExtra("xPos", xPos);
-                intent.putExtra("yPos", yPos);
-                startActivity(intent);
-                finish();
+                xPos.add(lvAdapter.getValue(i));
+                yPos.add(lvAdapter.getTaggedImage(i).getGrayscale());
             }
+            Intent intent = new Intent(AddModelActivity.this, CreateModelActivity.class);
+            intent.putExtra("name", name);
+            intent.putExtra("xPos", xPos);
+            intent.putExtra("yPos", yPos);
+            startActivity(intent);
+
+            Intent retIntent = new Intent();
+            retIntent.putExtra("model_name", name);
+            setResult(RESULT_OK, retIntent);
+            finish();
         });
     }
 
-
-
-    private ChangeTagOnAdapter changeTagOnAdapter = new ChangeTagOnAdapter();
-    private final ActivityResultLauncher<Intent> changeTagLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            changeTagOnAdapter
-    );
-    class ChangeTagOnAdapter implements ActivityResultCallback<ActivityResult> {
-        private int i;
-
-        public void setI(int i) {
-            this.i = i;
-        }
-
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                ImageTag tag = (ImageTag) result.getData().getSerializableExtra("tag");
-                lvAdapter.getTaggedImage(i).setTag(tag, AddModelActivity.this);
-                lvAdapter.notifyDataSetChanged();
-            }
-        }
-    }
     @Override
-    public void launch(Intent intent, int i) {
-        changeTagOnAdapter.setI(i);
-        changeTagLauncher.launch(intent);
+    protected void onDestroy() {
+        super.onDestroy();
+        actionSheet.dismiss();
     }
 }

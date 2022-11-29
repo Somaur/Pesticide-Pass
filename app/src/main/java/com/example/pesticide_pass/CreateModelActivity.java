@@ -5,12 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.View;
+import android.widget.Button;
 
 import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYPlot;
 import com.androidplot.xy.XYSeries;
+import com.example.pesticide_pass.data.FittedModel;
+import com.example.pesticide_pass.data.ModelsRepository;
 
 import org.apache.commons.math3.fitting.PolynomialCurveFitter;
 import org.apache.commons.math3.fitting.WeightedObservedPoints;
@@ -22,10 +27,12 @@ import java.util.List;
 
 public class CreateModelActivity extends AppCompatActivity {
 
+    String name;
     ArrayList<Double> xPos;
     ArrayList<Double> yPos;
 
     XYPlot plot;
+    Button btn1;
 
     final WeightedObservedPoints obs    = new WeightedObservedPoints();
     final PolynomialCurveFitter  fitter = PolynomialCurveFitter.create(1);
@@ -36,18 +43,33 @@ public class CreateModelActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_model);
 
-        getExtra();
-        if (xPos == null || yPos == null) {
-            Log.e("CREATE", "xPos=" + xPos + " yPos=" + yPos);
-            return;
-        }
-        fitterModel();
-
         // initialize our XYPlot reference:
-        plot = (XYPlot) findViewById(R.id.plot);
+        plot = findViewById(R.id.plot);
+        btn1 = findViewById(R.id.btn1);
 
-        XYSeries seriesPoint =
-                new SimpleXYSeries(xPos , yPos, "Data");
+        getExtra();
+        plot.setTitle(name);
+        fitterModel();
+        draw();
+
+        ModelsRepository.getInstance(this).fittedModels.add(new FittedModel(name, coeff[1], coeff[0]));
+        ModelsRepository.saveToLocale(this);
+
+        btn1.setOnClickListener(view -> {
+            mySetResult();
+            finish();
+        });
+    }
+
+    private void getExtra() {
+        Intent intent = getIntent();
+        xPos = (ArrayList<Double>) intent.getSerializableExtra("xPos");
+        yPos = (ArrayList<Double>) intent.getSerializableExtra("yPos");
+        name = intent.getStringExtra("name");
+    }
+
+    private void draw() {
+        XYSeries seriesPoint = new SimpleXYSeries(xPos , yPos, "Data");
 
         // 设置绘图范围，不设置的话自动生成大小会把点弄到边界上
         // Domain: x
@@ -56,6 +78,14 @@ public class CreateModelActivity extends AppCompatActivity {
         double x2 = Collections.max(xPos);
         double y1 = Collections.min(yPos);
         double y2 = Collections.max(yPos);
+        if (x2 - x1 < 5) {
+            x1 -= (5 + x1 - x2) / 2;
+            x2 += (5 + x1 - x2) / 2;
+        }
+        if (y2 - y1 < 5) {
+            y1 -= (5 + y1 - y2) / 2;
+            y2 += (5 + y1 - y2) / 2;
+        }
         double xStep = (x2 - x1) / 10;
         double yStep = (y2 - y1) / 10;
         plot.setDomainBoundaries(x1 - xStep, x2 + xStep, BoundaryMode.FIXED);
@@ -86,13 +116,6 @@ public class CreateModelActivity extends AppCompatActivity {
             obs.add(xPos.get(i), yPos.get(i));
         }
         coeff = fitter.fit(obs.toList());
-
-    }
-
-    private void getExtra() {
-        Intent intent = getIntent();
-        xPos = (ArrayList<Double>) intent.getSerializableExtra("xPos");
-        yPos = (ArrayList<Double>) intent.getSerializableExtra("yPos");
     }
 
     protected XYSeries generateSeries(double minX, double maxX, double resolution) {
@@ -115,5 +138,17 @@ public class CreateModelActivity extends AppCompatActivity {
 
     protected double fx(double x) {
         return x * coeff[1] + coeff[0];
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK){
+            mySetResult();
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void mySetResult() {
+        // nothing
     }
 }
