@@ -19,7 +19,9 @@ public class DBLogin {
     private static final String url = "jdbc:mysql://49.140.58.112:3306/pesticide";//lt的主机ip
     private static final String user = "root";
     private static final String pwd = "root";
-    private static String nickname;
+    private static String nickname=null;
+    private static String username=null;
+    private static int id;
     private static Connection conn=null;
     public static int status=-1;
     //public static Context context;
@@ -46,11 +48,11 @@ public class DBLogin {
         }
     }
 
-    public static int linkLoginsql(String username, String password) {
+    public static int linkLoginsql(String username_, String password) {
         Log.e("DB","logining");
         int code=-1;
         try {
-            String logSql = "Select * from users where username='"+ username+ "'and password='"+ password+ "'";
+            String logSql = "Select * from users where username='"+ username_+ "'and password='"+ password+ "'";
             PreparedStatement stmt = conn.prepareStatement(logSql);
             ResultSet rs = stmt.executeQuery(logSql);
             if(rs!=null){
@@ -58,6 +60,8 @@ public class DBLogin {
                     code=0;
                     status=0;
                     nickname=rs.getString("nickname");
+                    username=rs.getString("username");
+                    id=rs.getInt("id");
                 }else{
                     code=1;
                     status=1;
@@ -112,14 +116,16 @@ public class DBLogin {
         }
         return true;
     }
-    public static boolean modifyPassword(String username,String password_new){
+    public static boolean modifyPassword(String password_new){
         Log.e("DB","Modifying password");
-        String sql = "UPDATE users SET password='"
-                + password_new+ "' WHERE username=" + username;
+        Log.e("DB",username);
+        String sql = "UPDATE users SET password=? WHERE id=?";
         PreparedStatement stmt = null;
         try {
             stmt = conn.prepareStatement(sql);
-            stmt.executeUpdate(sql);
+            stmt.setString(1, password_new);			// 设置第一个“?”的内容
+            stmt.setInt(2,id);		// 设置第二个“?”的内容
+            stmt.executeUpdate();
             stmt.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -202,42 +208,8 @@ public class DBLogin {
     public static String getnickname(){
         return nickname;
     }
-}
-class ModuleBean{
-    private String name;
-    private double k;
-    private double b;
-    private String create_time;
-
-    public double getB() {
-        return b;
-    }
-
-    public String getCreate_time() {
-        return create_time;
-    }
-
-    public void setCreate_time(String create_time) {
-        this.create_time = create_time;
-    }
-
-    public void setB(double b) {
-        this.b = b;
-    }
-
-    public double getK() {
-        return k;
-    }
-
-    public void setK(double k) {
-        this.k = k;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public static String getusername(){
+        return username;
     }
 }
+

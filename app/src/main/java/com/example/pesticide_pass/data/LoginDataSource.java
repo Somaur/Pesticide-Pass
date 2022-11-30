@@ -23,7 +23,7 @@ public class LoginDataSource {
             if (!Remote.checkLogin(username, password)) throw new Exception();
             return new Result.Success<>(new LoggedInUser(
                     java.util.UUID.randomUUID().toString(),
-                    "NickName"));
+                    DBLogin.getnickname()));
 
 //            //创建一个线程
 //            //username=123456 password=123456 nickname=LingTong

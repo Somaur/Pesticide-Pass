@@ -21,6 +21,7 @@ import com.example.pesticide_pass.data.ModelsRepository;
 import com.example.pesticide_pass.running_state.RunningState;
 import com.example.pesticide_pass.tools.Remote;
 import com.example.pesticide_pass.tools.debug.ToBeContinued;
+import com.example.pesticide_pass.ui.login.DBLogin;
 import com.example.pesticide_pass.ui.login.LoginActivity;
 
 import java.util.List;
@@ -48,7 +49,14 @@ public class AccountSettingActivity extends AppCompatActivity {
                 String password = editText.getText().toString();
                 if (password.length() < 6)
                     Toast.makeText(this, "密码需要至少6位", Toast.LENGTH_SHORT).show();
-                else Remote.changePassword(password);
+                else{
+                    if(Remote.changePassword(password)){
+                        Toast.makeText(this, "密码修改成功！", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Toast.makeText(this, "密码修改失败！", Toast.LENGTH_SHORT).show();
+                    }
+                }
                 //..
             }).show();
         });
